@@ -28,13 +28,7 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
-      <v-icon id="apolloStatus" color="green">
-        mdi-checkbox-marked-circle
-      </v-icon>
-      <v-tooltip attach="apolloStatus">Apollo - Healthy</v-tooltip>
-      <v-icon color="green">mdi-checkbox-marked-circle</v-icon>
-      <v-icon color="orange">mdi-alert</v-icon>
-      <v-icon color="red">mdi-minus-circle</v-icon>
+      <ServiceStatus v-for="service in services" :key="service.name" compact :status="service.status">{{ service.name }}</ServiceStatus>
     </v-app-bar>
     <v-content>
       <v-container>
@@ -48,12 +42,32 @@
 </template>
 
 <script>
+import ServiceStatus from '~/components/ServiceStatus.vue'
+
 export default {
+  components: {
+    ServiceStatus
+  },
   data() {
     return {
       clipped: false,
       drawer: false,
       fixed: true,
+      services:
+      [
+        {
+          name: "Apollo",
+          status: "healthy"
+        },
+        {
+          name: "HS1Pay",
+          status: "degraded"
+        },
+        {
+          name: "SoeConnect",
+          status: "unhealthy"
+        }
+      ],
       items: [
         {
           icon: 'mdi-information-outline',
