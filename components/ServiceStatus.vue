@@ -6,59 +6,89 @@
           {{ icon }}
         </v-icon>
         <v-alert v-else dense outlined :type="alertType">
-          <slot></slot>
+          {{ info.name }}
         </v-alert>
       </div>
     </template>
-    <span>
-      <slot></slot> - <b>{{ status }}</b>
-    </span>
+    <table>
+      <tr>
+      {{ info.name }} - <b>{{ info.status }}</b>
+      </tr>
+      <tr>
+        {{ info.description }}
+      </tr>
+    </table>
   </v-tooltip>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   props: {
-    status: {
+    statusUrl: {
       type: String,
       required: true
     },
     compact: Boolean
   },
   data() {
-    return {}
+    return {
+      info: {
+        status: '',
+        name: '',
+        description: ''
+      }
+    }
   },
   computed: {
     alertType() {
-      switch (this.status) {
-        case 'healthy':
+      switch (this.info.status) {
+        case 'Healthy':
           return 'success'
-        case 'unhealthy':
+        case 'Unhealthy':
           return 'error'
         default:
           return 'warning'
       }
     },
     color() {
-      switch (this.status) {
-        case 'healthy':
+      switch (this.info.status) {
+        case 'Healthy':
           return 'green'
-        case 'unhealthy':
+        case 'Unhealthy':
           return 'red'
         default:
           return 'orange'
       }
     },
     icon() {
-      switch (this.status) {
-        case 'healthy':
+      switch (this.info.status) {
+        case 'Healthy':
           return 'mdi-checkbox-marked-circle'
-        case 'unhealthy':
+        case 'Unhealthy':
           return 'mdi-minus-circle'
         default:
           return 'mdi-alert'
       }
-    },
+    }
+  },
+  // eslint-disable-next-line
+  mounted: function() {
+    return axios
+      .get(this.statusUrl)
+      .then((response) => {
+        console.log(response.data)
+        this.info = {
+          status: response.data.Status,
+          name: response.data.Name,
+          description: response.data.Details
+        }
+      })
+      .catch(function(error) {
+        // handle error
+        console.log(error)
+      })
   }
 }
 </script>

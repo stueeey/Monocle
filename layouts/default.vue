@@ -1,20 +1,8 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
+    <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app>
       <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
+        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -28,7 +16,7 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
-      <ServiceStatus v-for="service in services" :key="service.name" compact :status="service.status">{{ service.name }}</ServiceStatus>
+      <ServiceStatus v-for="service in services" :key="service.name" compact :status-url="service.statusUrl" />
     </v-app-bar>
     <v-content>
       <v-container>
@@ -53,19 +41,15 @@ export default {
       clipped: false,
       drawer: false,
       fixed: true,
-      services:
-      [
+      services: [
         {
-          name: "Apollo",
-          status: "healthy"
+          statusUrl: 'https://hs1storage.blob.core.windows.net/servicestatus/wavelength_status.json'
         },
         {
-          name: "HS1Pay",
-          status: "degraded"
+          statusUrl: 'https://hs1storage.blob.core.windows.net/servicestatus/soeconnect_status.json'
         },
         {
-          name: "SoeConnect",
-          status: "unhealthy"
+          statusUrl: 'https://hs1storage.blob.core.windows.net/servicestatus/ascend_status.json'
         }
       ],
       items: [
